@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Martingale Trade Calculator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 40px;
+      background: url('https://cdn.vectorstock.com/i/500p/90/74/stock-market-or-forex-trading-graph-chart-vector-53269074.jpg') no-repeat center center fixed;
+      background-size: cover;
+  /* You can keep other properties as needed */
+
+    }
+    h1 {
+      color: #f30808;
+    }
+    input, button {
+      padding: 10px;
+      margin: 10px;
+      font-size: 16px;
+      width: 269px;
+    }
+    button {
+      background-color: #2980b9;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #1f6391;
+    }
+    .result {
+      margin-top: 30px;
+      text-align: center;
+      color: #03ff18;
+    }
+    .result-item {
+      font-size: 18px;
+      margin: 5px;
+    }
+    .bigger {
+      font-size: 22px;
+      font-weight: bold;
+      color: #fcec06;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>📊 Martingale Trade Calculator</h1>
+
+  <input type="number" id="firstTrade" placeholder="Enter first trade amount (₹)" required><br>
+  <input type="number" id="stages" placeholder="Enter martingale stages (default 10)"><br>
+  <input type="number" id="payout" placeholder="Enter payout % (default 92%)"><br>
+
+  <button onclick="calculateMartingale()">Calculate</button>
+
+  <div class="result" id="output"></div>
+
+  <script>
+    function formatIndianNumber(num) {
+      const [intPart, decPart] = num.toFixed(2).split(".");
+      let lastThree = intPart.slice(-3);
+      let otherNumbers = intPart.slice(0, -3);
+      if (otherNumbers !== "") {
+        lastThree = "," + lastThree;
+      }
+      let formatted = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+      return formatted + "." + decPart;
+    }
+
+    function calculateMartingale() {
+      const firstTrade = parseFloat(document.getElementById("firstTrade").value);
+      const stagesInput = document.getElementById("stages").value;
+      const stages = stagesInput.trim() === "" ? 10 : parseInt(stagesInput);
+
+      const payoutInput = document.getElementById("payout").value;
+      const payout = payoutInput.trim() === "" ? 92 : parseFloat(payoutInput);
+
+      const payoutRate = payout / 100;
+      const targetProfit = firstTrade * payoutRate;
+
+      let totalLoss = 0;
+      let output = `<h2 class="bigger">Martingale Trades for ${stages} Stage(s)</h2>`;
+
+      for (let i = 1; i <= stages; i++) {
+        let nextTrade = (totalLoss + targetProfit) / payoutRate;
+        totalLoss += nextTrade;
+        output += `<div class="result-item">${i} - ${formatIndianNumber(nextTrade)}</div>`;
+      }
+
+      document.getElementById("output").innerHTML = output;
+    }
+  </script>
+
+</body>
+</html>
