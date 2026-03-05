@@ -45,6 +45,12 @@
       font-weight: bold;
       color: #fcec06;
     }
+    .total {
+    font-size: 24px;
+    font-weight: bold;
+    color: #00ffff;
+    margin-top: 20px;
+    }
   </style>
 </head>
 <body>
@@ -60,38 +66,46 @@
   <div class="result" id="output"></div>
 
   <script>
-    function formatIndianNumber(num) {
-      const [intPart, decPart] = num.toFixed(2).split(".");
-      let lastThree = intPart.slice(-3);
-      let otherNumbers = intPart.slice(0, -3);
-      if (otherNumbers !== "") {
-        lastThree = "," + lastThree;
-      }
-      let formatted = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
-      return formatted + "." + decPart;
+    function formatIndianNumber(num) 
+    {
+        const [intPart, decPart] = num.toFixed(2).split(".");
+        let lastThree = intPart.slice(-3);
+        let otherNumbers = intPart.slice(0, -3);
+        if (otherNumbers !== "") 
+        {
+            lastThree = "," + lastThree;
+        }
+        let formatted = otherNumbers.replace(/\B(?=(\d{2})+(?!\d))/g, ",") + lastThree;
+        return formatted + "." + decPart;
     }
 
-    function calculateMartingale() {
-      const firstTrade = parseFloat(document.getElementById("firstTrade").value);
-      const stagesInput = document.getElementById("stages").value;
-      const stages = stagesInput.trim() === "" ? 10 : parseInt(stagesInput);
+    function calculateMartingale() 
+    {
+        const firstTrade = parseFloat(document.getElementById("firstTrade").value);
+        const stagesInput = document.getElementById("stages").value;
+        const stages = stagesInput.trim() === "" ? 10 : parseInt(stagesInput);
 
-      const payoutInput = document.getElementById("payout").value;
-      const payout = payoutInput.trim() === "" ? 92 : parseFloat(payoutInput);
+        const payoutInput = document.getElementById("payout").value;
+        const payout = payoutInput.trim() === "" ? 92 : parseFloat(payoutInput);
 
-      const payoutRate = payout / 100;
-      const targetProfit = firstTrade * payoutRate;
+        const payoutRate = payout / 100;
+        const targetProfit = firstTrade * payoutRate;
 
-      let totalLoss = 0;
-      let output = `<h2 class="bigger">Martingale Trades for ${stages} Stage(s)</h2>`;
+        let totalLoss = 0;
+        let output = `<h2 class="bigger">Martingale Trades for ${stages} Stage(s)</h2>`;
 
-      for (let i = 1; i <= stages; i++) {
-        let nextTrade = (totalLoss + targetProfit) / payoutRate;
-        totalLoss += nextTrade;
-        output += `<div class="result-item">${i} - ${formatIndianNumber(nextTrade)}</div>`;
-      }
+        for (let i = 1; i <= stages; i++) 
+        {
+            let nextTrade = (totalLoss + targetProfit) / payoutRate;
+            totalLoss += nextTrade;
 
-      document.getElementById("output").innerHTML = output;
+            output += `<div class="result-item">${i} - ${formatIndianNumber(nextTrade)}</div>`;
+        }
+
+        // NEW RESULT DISPLAY
+        output += `<div class="bigger">Total Amount Required: ₹ ${formatIndianNumber(totalLoss)}</div>`;
+
+        document.getElementById("output").innerHTML = output;
     }
   </script>
 
